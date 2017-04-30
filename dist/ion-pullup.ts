@@ -1,5 +1,5 @@
 /*
-ionic-pullup v2 for Ionic/Angular 2
+ionic-pullup-content v2 for Ionic/Angular 2
  
 Copyright 2016 Ariel Faur (https://github.com/arielfaur)
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,32 +41,32 @@ export interface FooterTab {
   content?: string;
 }
 
-export enum IonPullUpFooterState {
+export enum IonPullUpContentState {
   Collapsed = 0,  
   Expanded = 1,
   Minimized = 2
 }
 
-export enum IonPullUpFooterBehavior {
+export enum IonPullUpContentBehavior {
   Hide, 
   Expand
 }
 
 @Component({
-    selector: 'ion-pullup',
+    selector: 'ion-pullup-content',
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
-    <ion-footer #footer>
+    <ion-content-footer #footer>
       <ng-content></ng-content>
-    </ion-footer>
+    </ion-content-footer>
     `
 })
 export class IonPullUpComponent  { 
-  @Input() state: IonPullUpFooterState;
-  @Output() stateChange: EventEmitter<IonPullUpFooterState> = new EventEmitter<IonPullUpFooterState>();
+  @Input() state: IonPullUpContentState;
+  @Output() stateChange: EventEmitter<IonPullUpContentState> = new EventEmitter<IonPullUpContentState>();
 
-  @Input() initialState: IonPullUpFooterState;          // TODO implemment
-  @Input() defaultBehavior: IonPullUpFooterBehavior;    // TODO implemment
+  @Input() initialState: IonPullUpContentState;          // TODO implemment
+  @Input() defaultBehavior: IonPullUpContentBehavior;    // TODO implemment
   @Input() maxHeight: number;
 
   @Output() onExpand = new EventEmitter<any>();
@@ -77,7 +77,7 @@ export class IonPullUpComponent  {
 
   protected _footerMeta: FooterMetadata;
   protected _currentViewMeta: ViewMetadata;  
-  protected _oldState: IonPullUpFooterState;
+  protected _oldState: IonPullUpContentState;
 
   constructor(private platform: Platform, private el: ElementRef, private renderer: Renderer) {
     this._footerMeta = {
@@ -88,20 +88,20 @@ export class IonPullUpComponent  {
     this._currentViewMeta = {};  
     
     // sets initial state
-    this.initialState = this.initialState || IonPullUpFooterState.Collapsed;
-    this.defaultBehavior = this.defaultBehavior || IonPullUpFooterBehavior.Expand;
+    this.initialState = this.initialState || IonPullUpContentState.Collapsed;
+    this.defaultBehavior = this.defaultBehavior || IonPullUpContentBehavior.Expand;
     this.maxHeight = this.maxHeight || 0;
   }
   
   ngOnInit() {
-    console.debug('ionic-pullup => Initializing footer...');
+    console.debug('ionic-pullup-content => Initializing footer...');
 
     window.addEventListener("orientationchange", () => {
-      console.debug('ionic-pullup => Changed orientation => updating');
+      console.debug('ionic-pullup-content => Changed orientation => updating');
       this.updateUI();
     });
     this.platform.resume.subscribe(() => {
-      console.debug('ionic-pullup => Resumed from background => updating');
+      console.debug('ionic-pullup-content => Resumed from background => updating');
       this.updateUI();
     });
   }
@@ -109,7 +109,7 @@ export class IonPullUpComponent  {
    ngAfterContentInit() {    
       this.computeDefaults();
 
-      this.state = IonPullUpFooterState.Collapsed;
+      this.state = IonPullUpContentState.Collapsed;
 
       this.updateUI(true);  // need to indicate whether it's first run to avoid emitting events twice due to change detection
 
@@ -126,7 +126,7 @@ export class IonPullUpComponent  {
     // TODO: still need to test with tabs template (not convinced it is a valid use case...)
     this._currentViewMeta.tabs = this.el.nativeElement.closest('ion-tabs');
     this._currentViewMeta.tabsHeight = this._currentViewMeta.tabs ? (<HTMLElement> this._currentViewMeta.tabs.querySelector('.tabbar')).offsetHeight : 0
-    console.debug (this._currentViewMeta.tabsHeight ? 'ionic-pullup => Tabs detected' : 'ionic.pullup => View has no tabs'); 
+    console.debug (this._currentViewMeta.tabsHeight ? 'ionic-pullup-content => Tabs detected' : 'ionic.pullup => View has no tabs'); 
     //this._currentViewMeta.hasBottomTabs = this._currentViewMeta.tabs && this._currentViewMeta.tabs.classList.contains('tabs-bottom');
     
     
@@ -141,7 +141,7 @@ export class IonPullUpComponent  {
     
     // TODO: implement minimize mode
     //this.renderer.setElementStyle(this.el.nativeElement, 'min-height', this._footerMeta.height + 'px'); 
-    //if (this.initialState == IonPullUpFooterState.Minimized) {
+    //if (this.initialState == IonPullUpContentState.Minimized) {
     //  this.minimize()  
     //} else {
       this.collapse(isInit); 
@@ -184,20 +184,20 @@ export class IonPullUpComponent  {
   onTap(e: any) {
     e.preventDefault();
     
-    if (this.state == IonPullUpFooterState.Collapsed) {
-        if (this.defaultBehavior == IonPullUpFooterBehavior.Hide) 
-            this.state = IonPullUpFooterState.Minimized;
+    if (this.state == IonPullUpContentState.Collapsed) {
+        if (this.defaultBehavior == IonPullUpContentBehavior.Hide) 
+            this.state = IonPullUpContentState.Minimized;
         else
-            this.state = IonPullUpFooterState.Expanded;
+            this.state = IonPullUpContentState.Expanded;
     } else {
-        if (this.state == IonPullUpFooterState.Minimized) {
-            if (this.defaultBehavior == IonPullUpFooterBehavior.Hide)
-                this.state = IonPullUpFooterState.Collapsed;
+        if (this.state == IonPullUpContentState.Minimized) {
+            if (this.defaultBehavior == IonPullUpContentBehavior.Hide)
+                this.state = IonPullUpContentState.Collapsed;
             else
-                this.state = IonPullUpFooterState.Expanded;
+                this.state = IonPullUpContentState.Expanded;
         } else {
             // footer is expanded
-            this.state = this.initialState == IonPullUpFooterState.Minimized ? IonPullUpFooterState.Minimized : IonPullUpFooterState.Collapsed;
+            this.state = this.initialState == IonPullUpContentState.Minimized ? IonPullUpContentState.Minimized : IonPullUpContentState.Collapsed;
         }
     }
   }
@@ -220,10 +220,10 @@ export class IonPullUpComponent  {
         this.renderer.setElementStyle(this.childFooter.nativeElement, 'transition', '300ms ease-in-out');
         
           if (this._footerMeta.lastPosY > this._footerMeta.posY) {
-              this.state = IonPullUpFooterState.Expanded;
+              this.state = IonPullUpContentState.Expanded;
           }
           else if (this._footerMeta.lastPosY < this._footerMeta.posY) {
-              this.state = (this.initialState == IonPullUpFooterState.Minimized) ? IonPullUpFooterState.Minimized : IonPullUpFooterState.Collapsed;
+              this.state = (this.initialState == IonPullUpContentState.Minimized) ? IonPullUpContentState.Minimized : IonPullUpContentState.Collapsed;
           }  
 
         break;
@@ -233,13 +233,13 @@ export class IonPullUpComponent  {
   ngDoCheck() {
     if (!Object.is(this.state, this._oldState)) {
       switch (this.state) {
-        case IonPullUpFooterState.Collapsed:
+        case IonPullUpContentState.Collapsed:
           this.collapse();
           break;
-        case IonPullUpFooterState.Expanded:
+        case IonPullUpContentState.Expanded:
           this.expand();
           break;
-        case IonPullUpFooterState.Minimized:
+        case IonPullUpContentState.Minimized:
           this.minimize();
           break;
       }

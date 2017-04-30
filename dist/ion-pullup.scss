@@ -20,7 +20,7 @@ $tabShadow:         #666;                             // shadow color
     box-shadow: 0px -2px 2px $shadowColor;
 }
 
-ion-pullup { 
+ion-pullup-content {
   background : color($colors, primary, base);  
 
   .footer {
@@ -28,7 +28,7 @@ ion-pullup {
       content: none;
     }
 
-    ion-pullup-tab {
+    ion-pullup-content-tab {
       z-index: 1000;
       display: flex;
       justify-content: center;
